@@ -3,12 +3,12 @@
 return [
 
     'items'                 => 'Mục | Mục',
-    'incomes'               => 'Thu nhập | Thu nhập',
+    'incomes'               => 'Kinh doanh | Kinh doanh',
     'invoices'              => 'Hoá đơn | Hoá đơn',
     'revenues'              => 'Doanh thu | Doanh thu',
     'customers'             => 'Khách hàng | Khách hàng',
     'expenses'              => 'Chi phí | Chi phí',
-    'bills'                 => 'Hoá đơn | Hoá đơn',
+    'bills'                 => 'Đơn hàng | Đơn hàng',
     'payments'              => 'Thanh toán | Thanh toán',
     'vendors'               => 'Nhà cung cấp | Nhà cung cấp',
     'accounts'              => 'Tài khoản | Tài khoản',

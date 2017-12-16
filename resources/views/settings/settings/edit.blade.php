@@ -21,7 +21,7 @@
                     <li class=""><a href="#invoice" data-toggle="tab" aria-expanded="false">{{ trans('settings.invoice.tab') }}</a></li>
                     <li class=""><a href="#default" data-toggle="tab" aria-expanded="false">{{ trans('settings.default.tab') }}</a></li>
                     <li class=""><a href="#email" data-toggle="tab" aria-expanded="false">{{ trans('general.email') }}</a></li>
-                    <li class=""><a href="#scheduling" data-toggle="tab" aria-expanded="false">{{ trans('settings.scheduling.tab') }}</a></li>
+                    {{--<li class=""><a href="#scheduling" data-toggle="tab" aria-expanded="false">{{ trans('settings.scheduling.tab') }}</a></li>--}}
                     <li class=""><a href="#appearance" data-toggle="tab" aria-expanded="false">{{ trans('settings.appearance.tab') }}</a></li>
                     <li class=""><a href="#system" data-toggle="tab" aria-expanded="false">{{ trans('settings.system.tab') }}</a></li>
                 </ul>
