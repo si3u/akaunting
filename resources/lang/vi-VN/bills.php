@@ -5,7 +5,7 @@ return [
     'bill_number'       => 'Số hoá đơn',
     'bill_date'         => 'Ngày trên hoá đơn',
     'total_price'       => 'Tổng giá',
-    'due_date'          => 'Ngày hết hạn',
+    'due_date'          => 'Ngày giao hàng',
     'order_number'      => 'Số đơn hàng',
     'bill_from'         => 'Hoá đơn từ',
 

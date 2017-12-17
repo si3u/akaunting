@@ -5,7 +5,7 @@ return [
     'invoice_number'    => 'Số hoá đơn',
     'invoice_date'      => 'Ngày hóa đơn',
     'total_price'       => 'Tổng giá',
-    'due_date'          => 'Ngày hết hạn',
+    'due_date'          => 'Ngày giao hàng',
     'order_number'      => 'Số đơn hàng',
     'bill_to'           => 'Hoá đơn tới',
 
@@ -14,7 +14,8 @@ return [
     'sub_total'         => 'Tổng phụ',
     'tax_total'         => 'Tổng thuế',
     'total'             => 'Tổng số',
-
+    'sizes'             => 'Kích cỡ',
+    'number_shirt'      => 'Số áo',
     'item_name'         => 'Tên mục | Tên mục',
 
     'payment_due'       => 'Hạn thanh toán',

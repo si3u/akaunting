@@ -11,7 +11,7 @@
  Target Server Version : 50718
  File Encoding         : 65001
 
- Date: 16/12/2017 15:55:52
+ Date: 17/12/2017 23:20:55
 */
 
 SET NAMES utf8mb4;
@@ -285,7 +285,12 @@ CREATE TABLE `7ih_customers`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `customers_company_id_email_deleted_at_unique`(`company_id`, `email`, `deleted_at`) USING BTREE,
   INDEX `customers_company_id_index`(`company_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of 7ih_customers
+-- ----------------------------
+INSERT INTO `7ih_customers` VALUES (1, 1, NULL, 'Sieu', 'sieu@vn.com', NULL, '0969352404', 'Ha Noi', NULL, 'VND', 1, '2017-12-17 02:40:54', '2017-12-17 02:40:54', NULL);
 
 -- ----------------------------
 -- Table structure for 7ih_failed_jobs
@@ -317,7 +322,12 @@ CREATE TABLE `7ih_invoice_histories`  (
   `deleted_at` timestamp(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `invoice_histories_company_id_index`(`company_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of 7ih_invoice_histories
+-- ----------------------------
+INSERT INTO `7ih_invoice_histories` VALUES (1, 1, 10, 'draft', 0, 'INV-00010 đã được thêm!', '2017-12-17 15:01:48', '2017-12-17 15:01:48', NULL);
 
 -- ----------------------------
 -- Table structure for 7ih_invoice_items
@@ -325,22 +335,30 @@ CREATE TABLE `7ih_invoice_histories`  (
 DROP TABLE IF EXISTS `7ih_invoice_items`;
 CREATE TABLE `7ih_invoice_items`  (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `company_id` int(11) NOT NULL,
-  `invoice_id` int(11) NOT NULL,
+  `company_id` int(11) NULL DEFAULT NULL,
+  `invoice_id` int(11) NULL DEFAULT NULL,
   `item_id` int(11) NULL DEFAULT NULL,
-  `name` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `sku` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `quantity` int(11) NOT NULL,
-  `price` double(15, 4) NOT NULL,
-  `total` double(15, 4) NOT NULL,
-  `tax` double(15, 4) NOT NULL DEFAULT 0.0000,
-  `tax_id` int(11) NOT NULL,
+  `quantity` int(11) NULL DEFAULT NULL,
+  `price` double(15, 4) NULL DEFAULT NULL,
+  `total` double(15, 4) NULL DEFAULT NULL,
+  `tax` double(15, 4) NULL DEFAULT 0.0000,
+  `tax_id` int(11) NULL DEFAULT NULL,
+  `size` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `size_id` int(11) NULL DEFAULT NULL,
+  `number_shirt` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `created_at` timestamp(0) NULL DEFAULT NULL,
   `updated_at` timestamp(0) NULL DEFAULT NULL,
   `deleted_at` timestamp(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `invoice_items_company_id_index`(`company_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of 7ih_invoice_items
+-- ----------------------------
+INSERT INTO `7ih_invoice_items` VALUES (1, 1, 10, NULL, NULL, NULL, 0, 0.0000, 0.0000, 0.0000, 0, 'm', 5, NULL, '2017-12-17 15:01:48', '2017-12-17 15:01:48', NULL);
 
 -- ----------------------------
 -- Table structure for 7ih_invoice_payments
@@ -409,7 +427,13 @@ CREATE TABLE `7ih_invoice_totals`  (
   `deleted_at` timestamp(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `invoice_totals_company_id_index`(`company_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of 7ih_invoice_totals
+-- ----------------------------
+INSERT INTO `7ih_invoice_totals` VALUES (1, 1, 10, 'sub_total', 'invoices.sub_total', 0.0000, 1, '2017-12-17 15:01:48', '2017-12-17 15:01:48', NULL);
+INSERT INTO `7ih_invoice_totals` VALUES (2, 1, 10, 'total', 'invoices.total', 0.0000, 2, '2017-12-17 15:01:48', '2017-12-17 15:01:48', NULL);
 
 -- ----------------------------
 -- Table structure for 7ih_invoices
@@ -432,6 +456,17 @@ CREATE TABLE `7ih_invoices`  (
   `customer_tax_number` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `customer_phone` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `customer_address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  `loai_vai` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `kieu_dang` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `mau_sac` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `mat_truoc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `mat_sau` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `bung` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `co` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `tay` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `hong` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `lai_ao` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `quan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
   `attachment` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `created_at` timestamp(0) NULL DEFAULT NULL,
@@ -440,7 +475,21 @@ CREATE TABLE `7ih_invoices`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `invoices_company_id_invoice_number_deleted_at_unique`(`company_id`, `invoice_number`, `deleted_at`) USING BTREE,
   INDEX `invoices_company_id_index`(`company_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of 7ih_invoices
+-- ----------------------------
+INSERT INTO `7ih_invoices` VALUES (1, 1, 'INV-00001', NULL, 'draft', '2017-12-17', '2017-12-27', 0.0000, 'VND', 1.00000000, 1, 'Sieu', 'sieu@vn.com', NULL, '0969352404', 'Ha Noi', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'invoices/01simple.xlsx', '2017-12-17 14:39:54', '2017-12-17 14:51:30', '2017-12-17 14:51:30');
+INSERT INTO `7ih_invoices` VALUES (2, 1, 'INV-00002', NULL, 'draft', '2017-12-17', '2017-12-19', 0.0000, 'VND', 1.00000000, 1, 'Sieu', 'sieu@vn.com', NULL, '0969352404', 'Ha Noi', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'invoices/01simple.xlsx', '2017-12-17 14:52:28', '2017-12-17 14:52:28', NULL);
+INSERT INTO `7ih_invoices` VALUES (3, 1, 'INV-00003', NULL, 'draft', '2017-12-17', '2017-12-19', 0.0000, 'VND', 1.00000000, 1, 'Sieu', 'sieu@vn.com', NULL, '0969352404', 'Ha Noi', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-12-17 14:54:43', '2017-12-17 14:54:43', NULL);
+INSERT INTO `7ih_invoices` VALUES (4, 1, 'INV-00004', NULL, 'draft', '2017-12-17', '2017-12-19', 0.0000, 'VND', 1.00000000, 1, 'Sieu', 'sieu@vn.com', NULL, '0969352404', 'Ha Noi', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-12-17 14:55:26', '2017-12-17 14:55:26', NULL);
+INSERT INTO `7ih_invoices` VALUES (5, 1, 'INV-00005', NULL, 'draft', '2017-12-17', '2017-12-19', 0.0000, 'VND', 1.00000000, 1, 'Sieu', 'sieu@vn.com', NULL, '0969352404', 'Ha Noi', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-12-17 14:56:23', '2017-12-17 14:56:23', NULL);
+INSERT INTO `7ih_invoices` VALUES (6, 1, 'INV-00006', NULL, 'draft', '2017-12-17', '2017-12-19', 0.0000, 'VND', 1.00000000, 1, 'Sieu', 'sieu@vn.com', NULL, '0969352404', 'Ha Noi', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-12-17 14:57:07', '2017-12-17 14:57:07', NULL);
+INSERT INTO `7ih_invoices` VALUES (7, 1, 'INV-00007', NULL, 'draft', '2017-12-17', '2017-12-21', 0.0000, 'VND', 1.00000000, 1, 'Sieu', 'sieu@vn.com', NULL, '0969352404', 'Ha Noi', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'invoices/01simple.xlsx', '2017-12-17 14:58:51', '2017-12-17 14:58:51', NULL);
+INSERT INTO `7ih_invoices` VALUES (8, 1, 'INV-00008', NULL, 'draft', '2017-12-17', '2017-12-21', 0.0000, 'VND', 1.00000000, 1, 'Sieu', 'sieu@vn.com', NULL, '0969352404', 'Ha Noi', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-12-17 14:59:37', '2017-12-17 14:59:37', NULL);
+INSERT INTO `7ih_invoices` VALUES (9, 1, 'INV-00009', NULL, 'draft', '2017-12-17', '2017-12-21', 0.0000, 'VND', 1.00000000, 1, 'Sieu', 'sieu@vn.com', NULL, '0969352404', 'Ha Noi', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-12-17 15:00:08', '2017-12-17 15:00:08', NULL);
+INSERT INTO `7ih_invoices` VALUES (10, 1, 'INV-00010', NULL, 'draft', '2017-12-17', '2017-12-21', 0.0000, 'VND', 1.00000000, 1, 'Sieu', 'sieu@vn.com', NULL, '0969352404', 'Ha Noi', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2017-12-17 15:01:48', '2017-12-17 15:01:48', NULL);
 
 -- ----------------------------
 -- Table structure for 7ih_items
@@ -1004,7 +1053,7 @@ CREATE TABLE `7ih_settings`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `settings_company_id_key_unique`(`company_id`, `key`) USING BTREE,
   INDEX `settings_company_id_index`(`company_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 41 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 45 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of 7ih_settings
@@ -1015,7 +1064,7 @@ INSERT INTO `7ih_settings` VALUES (3, 1, 'general.date_separator', 'slash');
 INSERT INTO `7ih_settings` VALUES (4, 1, 'general.timezone', 'Asia/Ho_Chi_Minh');
 INSERT INTO `7ih_settings` VALUES (5, 1, 'general.invoice_number_prefix', 'INV-');
 INSERT INTO `7ih_settings` VALUES (6, 1, 'general.invoice_number_digit', '5');
-INSERT INTO `7ih_settings` VALUES (7, 1, 'general.invoice_number_next', '1');
+INSERT INTO `7ih_settings` VALUES (7, 1, 'general.invoice_number_next', '11');
 INSERT INTO `7ih_settings` VALUES (8, 1, 'general.default_payment_method', 'offlinepayment.cash.1');
 INSERT INTO `7ih_settings` VALUES (9, 1, 'general.email_protocol', 'mail');
 INSERT INTO `7ih_settings` VALUES (10, 1, 'general.email_sendmail_path', '/usr/sbin/sendmail -bs');
@@ -1028,9 +1077,9 @@ INSERT INTO `7ih_settings` VALUES (16, 1, 'general.admin_theme', 'skin-green-lig
 INSERT INTO `7ih_settings` VALUES (17, 1, 'general.list_limit', '25');
 INSERT INTO `7ih_settings` VALUES (18, 1, 'general.use_gravatar', '0');
 INSERT INTO `7ih_settings` VALUES (19, 1, 'general.session_handler', 'file');
-INSERT INTO `7ih_settings` VALUES (20, 1, 'general.session_lifetime', '180');
+INSERT INTO `7ih_settings` VALUES (20, 1, 'general.session_lifetime', '18000');
 INSERT INTO `7ih_settings` VALUES (21, 1, 'general.file_size', '100');
-INSERT INTO `7ih_settings` VALUES (22, 1, 'general.file_types', 'pdf,jpeg,jpg,png');
+INSERT INTO `7ih_settings` VALUES (22, 1, 'general.file_types', 'pdf,jpeg,jpg,png,zip,rar,7z,xlsx,docs,xls,doc');
 INSERT INTO `7ih_settings` VALUES (23, 1, 'general.company_name', 'TGS');
 INSERT INTO `7ih_settings` VALUES (24, 1, 'general.company_email', 'admin@admin.com');
 INSERT INTO `7ih_settings` VALUES (25, 1, 'general.default_currency', 'VND');
@@ -1038,6 +1087,34 @@ INSERT INTO `7ih_settings` VALUES (26, 1, 'general.default_locale', 'vi-VN');
 INSERT INTO `7ih_settings` VALUES (27, 1, 'offlinepayment.methods', '[{\"code\":\"offlinepayment.cash.1\",\"name\":\"Thanh to\\u00e1n tr\\u1ef1c ti\\u1ebfp\",\"order\":\"1\",\"description\":null,\"customer\":\"0\"},{\"code\":\"offlinepayment.bank_transfer.2\",\"name\":\"Chuy\\u1ec3n kho\\u1ea3n\",\"order\":\"2\",\"description\":null,\"customer\":\"0\"}]');
 INSERT INTO `7ih_settings` VALUES (30, 1, 'general.company_logo', 'settings/tgslive-profile_image-eb77b442e5f77a39-300x300.png');
 INSERT INTO `7ih_settings` VALUES (34, 1, 'general.default_tax', '2');
+INSERT INTO `7ih_settings` VALUES (41, 1, 'general.default_size', '1');
+
+-- ----------------------------
+-- Table structure for 7ih_sizes
+-- ----------------------------
+DROP TABLE IF EXISTS `7ih_sizes`;
+CREATE TABLE `7ih_sizes`  (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `company_id` int(11) NOT NULL,
+  `name` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `key` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `enabled` tinyint(1) NOT NULL,
+  `created_at` timestamp(0) NULL DEFAULT NULL,
+  `updated_at` timestamp(0) NULL DEFAULT NULL,
+  `deleted_at` timestamp(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `taxes_company_id_index`(`company_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of 7ih_sizes
+-- ----------------------------
+INSERT INTO `7ih_sizes` VALUES (4, 1, 'S', 's', 1, '2017-11-08 00:00:00', '2017-11-08 00:00:00', NULL);
+INSERT INTO `7ih_sizes` VALUES (5, 1, 'M', 'm', 1, '2017-11-08 00:00:00', '2017-11-08 00:00:00', NULL);
+INSERT INTO `7ih_sizes` VALUES (6, 1, 'L', 'l', 1, '2017-11-08 00:00:00', '2017-11-08 00:00:00', NULL);
+INSERT INTO `7ih_sizes` VALUES (7, 1, 'XL', 'xl', 1, '2017-11-08 00:00:00', '2017-11-08 00:00:00', NULL);
+INSERT INTO `7ih_sizes` VALUES (8, 1, 'XXL', 'xxl', 1, '2017-11-08 00:00:00', '2017-11-08 00:00:00', NULL);
+INSERT INTO `7ih_sizes` VALUES (9, 1, 'XXXL', 'xxxl', 1, '2017-11-08 00:00:00', '2017-11-08 00:00:00', NULL);
 
 -- ----------------------------
 -- Table structure for 7ih_taxes

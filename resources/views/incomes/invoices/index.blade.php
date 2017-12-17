@@ -33,12 +33,12 @@
             <table class="table table-striped table-hover" id="tbl-invoices">
                 <thead>
                     <tr>
-                        <th class="col-md-2">@sortablelink('invoice_number', trans_choice('general.numbers', 1))</th>
+                        <th class="col-md-1">@sortablelink('invoice_number', trans_choice('general.numbers', 1))</th>
                         <th class="col-md-3">@sortablelink('customer_name', trans_choice('general.customers', 1))</th>
                         <th class="col-md-1">@sortablelink('amount', trans('general.amount'))</th>
                         <th class="col-md-2">@sortablelink('invoiced_at', trans('invoices.invoice_date'))</th>
                         <th class="col-md-2">@sortablelink('due_at', trans('invoices.due_date'))</th>
-                        <th class="col-md-1">@sortablelink('status.name', trans_choice('general.statuses', 1))</th>
+                        <th class="col-md-2">@sortablelink('status.name', trans_choice('general.statuses', 1))</th>
                         <th class="col-md-1 text-center">{{ trans('general.actions') }}</th>
                     </tr>
                 </thead>

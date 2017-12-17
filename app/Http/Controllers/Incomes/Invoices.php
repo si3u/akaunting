@@ -19,7 +19,7 @@ use App\Models\Income\InvoiceStatus;
 use App\Models\Item\Item;
 use App\Models\Setting\Category;
 use App\Models\Setting\Currency;
-use App\Models\Setting\Tax;
+use App\Models\Setting\Size;
 use App\Notifications\Income\Invoice as Notification;
 use App\Notifications\Item\Item as ItemNotification;
 use App\Traits\Currencies;
@@ -102,11 +102,12 @@ class Invoices extends Controller
 
         $items = Item::enabled()->pluck('name', 'id');
 
-        $taxes = Tax::enabled()->pluck('name', 'id');
+//        $taxes = Tax::enabled()->pluck('name', 'id');
+        $sizes = Size::enabled()->pluck('name', 'id');
 
         $number = $this->getNextInvoiceNumber();
 
-        return view('incomes.invoices.create', compact('customers', 'currencies', 'items', 'taxes', 'number'));
+        return view('incomes.invoices.create', compact('customers', 'currencies', 'items', 'sizes', 'number'));
     }
 
     /**
@@ -153,75 +154,32 @@ class Invoices extends Controller
         $invoice_item = [];
         $invoice_item['company_id'] = $request['company_id'];
         $invoice_item['invoice_id'] = $invoice->id;
-
         if ($request['item']) {
             foreach ($request['item'] as $item) {
-                $item_sku = '';
+                if (!empty($item['size_id'])) {
+                    $size_object = Size::find($item['size_id']);
 
-                if (!empty($item['item_id'])) {
-                    $item_object = Item::find($item['item_id']);
+                    $size_id = $item['size_id'];
 
-                    $item_sku = $item_object->sku;
-
-                    // Decrease stock (item sold)
-                    $item_object->quantity -= $item['quantity'];
-                    $item_object->save();
-
-                    // Notify users if out of stock
-                    if ($item_object->quantity == 0) {
-                        foreach ($item_object->company->users as $user) {
-                            if (!$user->can('read-notifications')) {
-                                continue;
-                            }
-
-                            $user->notify(new ItemNotification($item_object));
-                        }
-                    }
-                }
-
-                $tax = $tax_id = 0;
-
-                if (!empty($item['tax_id'])) {
-                    $tax_object = Tax::find($item['tax_id']);
-
-                    $tax_id = $item['tax_id'];
-
-                    $tax = (($item['price'] * $item['quantity']) / 100) * $tax_object->rate;
+                    $size = $size_object->key;
                 }
 
                 $invoice_item['item_id'] = $item['item_id'];
                 $invoice_item['name'] = $item['name'];
-                $invoice_item['sku'] = $item_sku;
-                $invoice_item['quantity'] = $item['quantity'];
-                $invoice_item['price'] = $item['price'];
-                $invoice_item['tax'] = $tax;
-                $invoice_item['tax_id'] = $tax_id;
-                $invoice_item['total'] = $item['price'] * $item['quantity'];
+                $invoice_item['number_shirt'] = $item['number_shirt'];
+                $invoice_item['size'] = $size;
+                $invoice_item['size_id'] = $size_id;
+                $invoice_item['quantity'] = 0;
+                $invoice_item['price'] = 0;
+                $invoice_item['total'] = 0;
+                $invoice_item['tax_id'] = 0;
+                $invoice_item['tax'] = 0;
 
                 InvoiceItem::create($invoice_item);
-
-                // Set taxes
-                if (isset($tax_object)) {
-                    if (array_key_exists($tax_object->id, $taxes)) {
-                        $taxes[$tax_object->id]['amount'] += $tax;
-                    } else {
-                        $taxes[$tax_object->id] = [
-                            'name' => $tax_object->name,
-                            'amount' => $tax
-                        ];
-                    }
-                }
-
-                // Calculate totals
-                $tax_total += $tax;
-                $sub_total += $invoice_item['total'];
 
                 unset($tax_object);
             }
         }
-
-        $request['amount'] = $sub_total + $tax_total;
-
         $invoice->update($request->input());
 
         // Add invoice totals
@@ -319,9 +277,9 @@ class Invoices extends Controller
 
         $items = Item::enabled()->pluck('name', 'id');
 
-        $taxes = Tax::enabled()->pluck('name', 'id');
+        $sizes = Size::enabled()->pluck('name', 'id');
 
-        return view('incomes.invoices.edit', compact('invoice', 'customers', 'currencies', 'items', 'taxes'));
+        return view('incomes.invoices.edit', compact('invoice', 'customers', 'currencies', 'items', 'sizes'));
     }
 
     /**
@@ -356,9 +314,9 @@ class Invoices extends Controller
             $request['attachment'] = $attachment_path;
         }
 
-        $taxes = [];
-        $tax_total = 0;
-        $sub_total = 0;
+//        $taxes = [];
+//        $tax_total = 0;
+//        $sub_total = 0;
 
         $invoice_item = [];
         $invoice_item['company_id'] = $request['company_id'];
@@ -379,12 +337,12 @@ class Invoices extends Controller
 
                 $tax = $tax_id = 0;
 
-                if (!empty($item['tax_id'])) {
-                    $tax_object = Tax::find($item['tax_id']);
+                if (!empty($item['size_id'])) {
+                    $size_object = Size::find($item['tax_id']);
 
-                    $tax_id = $item['tax_id'];
+                    $size_id = $item['size_id'];
 
-                    $tax = (($item['price'] * $item['quantity']) / 100) * $tax_object->rate;
+                    $size = $size_object->key;
                 }
 
                 $invoice_item['item_id'] = $item['item_id'];
@@ -392,29 +350,29 @@ class Invoices extends Controller
                 $invoice_item['sku'] = $item_sku;
                 $invoice_item['quantity'] = $item['quantity'];
                 $invoice_item['price'] = $item['price'];
-                $invoice_item['tax'] = $tax;
-                $invoice_item['tax_id'] = $tax_id;
-                $invoice_item['total'] = $item['price'] * $item['quantity'];
+                $invoice_item['size'] = $size;
+                $invoice_item['size_id'] = $size_id;
+                //$invoice_item['total'] = $item['price'] * $item['quantity'];
 
-                if (isset($tax_object)) {
-                    if (array_key_exists($tax_object->id, $taxes)) {
-                        $taxes[$tax_object->id]['amount'] += $tax;
-                    } else {
-                        $taxes[$tax_object->id] = [
-                            'name' => $tax_object->name,
-                            'amount' => $tax
-                        ];
-                    }
-                }
-
-                $tax_total += $tax;
-                $sub_total += $invoice_item['total'];
+//                if (isset($tax_object)) {
+//                    if (array_key_exists($tax_object->id, $taxes)) {
+//                        $taxes[$tax_object->id]['amount'] += $tax;
+//                    } else {
+//                        $taxes[$tax_object->id] = [
+//                            'name' => $tax_object->name,
+//                            'amount' => $tax
+//                        ];
+//                    }
+//                }
+//
+//                $tax_total += $tax;
+//                $sub_total += $invoice_item['total'];
 
                 InvoiceItem::create($invoice_item);
             }
         }
 
-        $request['amount'] = $sub_total + $tax_total;
+        //$request['amount'] = $sub_total + $tax_total;
 
         $invoice->update($request->input());
 
@@ -422,7 +380,7 @@ class Invoices extends Controller
         InvoiceTotal::where('invoice_id', $invoice->id)->delete();
 
         // Add invoice totals
-        $this->addTotals($invoice, $request, $taxes, $sub_total, $tax_total);
+        //$this->addTotals($invoice, $request, $taxes, $sub_total, $tax_total);
 
         // Fire the event to make it extendible
         event(new InvoiceUpdated($invoice));

@@ -30,6 +30,20 @@
 
         {{ Form::textGroup('order_number', trans('invoices.order_number'), 'shopping-cart', []) }}
 
+        {{ Form::textGroup('loai_vai', trans('general.loai_vai'), '', []) }}
+        {{ Form::textGroup('kieu_dang', trans('general.kieu_dang'), '', []) }}
+        {{ Form::textGroup('size_total', trans_choice('general.sizes', 1), '', ['readonly' => 'readonly']) }}
+
+        {{ Form::textGroup('mau_sac', trans('general.mau_sac'), '', []) }}
+        {{ Form::textGroup('mat_truoc', trans('general.mat_truoc'), '', []) }}
+        {{ Form::textGroup('mat_sau', trans('general.mat_sau'), '', []) }}
+        {{ Form::textGroup('bung', trans('general.bung'), '', []) }}
+        {{ Form::textGroup('co', trans('general.co'), '', []) }}
+        {{ Form::textGroup('tay', trans('general.tay'), '', []) }}
+        {{ Form::textGroup('hong', trans('general.hong'), '', []) }}
+        {{ Form::textGroup('lai_ao', trans('general.lai_ao'), '', []) }}
+        {{ Form::textGroup('quan', trans('general.quan'), '', []) }}
+
         <div class="form-group col-md-12">
             {!! Form::label('items', 'Items', ['class' => 'control-label']) !!}
             <div class="table-responsive">
@@ -38,51 +52,31 @@
                         <tr style="background-color: #f9f9f9;">
                             <th width="5%"  class="text-center">{{ trans('general.actions') }}</th>
                             <th width="40%" class="text-left">{{ trans('general.name') }}</th>
-                            <th width="5%" class="text-center">{{ trans('invoices.quantity') }}</th>
-                            <th width="10%" class="text-right">{{ trans('invoices.price') }}</th>
-                            <th width="15%" class="text-right">{{ trans_choice('general.taxes', 1) }}</th>
-                            <th width="10%" class="text-right">{{ trans('invoices.total') }}</th>
+                            <th width="10%" class="text-right">{{ trans('invoices.number_shirt') }}</th>
+                            <th width="15%" class="text-right">{{ trans_choice('general.sizes', 1) }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php $item_row = 0; ?>
                         <tr id="item-row-{{ $item_row }}">
                             <td class="text-center" style="vertical-align: middle;">
-                                <button type="button" onclick="$(this).tooltip('destroy'); $('#item-row-{{ $item_row }}').remove(); totalItem();" data-toggle="tooltip" title="{{ trans('general.delete') }}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                                <button type="button" onclick="$(this).tooltip('destroy'); $('#item-row-{{ $item_row }}').remove();" data-toggle="tooltip" title="{{ trans('general.delete') }}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
                             </td>
                             <td>
-                                <input class="form-control typeahead" required="required" placeholder="{{ trans('general.form.enter', ['field' => trans_choice('invoices.item_name', 1)]) }}" name="item[{{ $item_row }}][name]" type="text" id="item-name-{{ $item_row }}">
+                                <input class="form-control typeahead" placeholder="{{ trans('general.form.enter', ['field' => trans_choice('invoices.item_name', 1)]) }}" name="item[{{ $item_row }}][name]" type="text" id="item-name-{{ $item_row }}">
                                 <input name="item[{{ $item_row }}][item_id]" type="hidden" id="item-id-{{ $item_row }}">
                             </td>
                             <td>
-                                <input class="form-control text-center" required="required" name="item[{{ $item_row }}][quantity]" type="text" id="item-quantity-{{ $item_row }}">
+                                <input class="form-control text-right" name="item[{{ $item_row }}][number_shirt]" type="text" id="item-number-shirt-{{ $item_row }}">
                             </td>
                             <td>
-                                <input class="form-control text-right" required="required" name="item[{{ $item_row }}][price]" type="text" id="item-price-{{ $item_row }}">
-                            </td>
-                            <td>
-                                {!! Form::select('item[' . $item_row . '][tax_id]', $taxes, setting('general.default_tax'), ['id'=> 'item-tax-'. $item_row, 'class' => 'form-control select2', 'placeholder' => trans('general.form.select.field', ['field' => trans_choice('general.taxes', 1)])]) !!}
-                            </td>
-                            <td class="text-right" style="vertical-align: middle;">
-                                <span id="item-total-{{ $item_row }}">0</span>
+                                {!! Form::select('item[' . $item_row . '][size_id]', $sizes, setting('general.default_size'), ['id'=> 'item-size-'. $item_row, 'class' => 'form-control select2', 'placeholder' => trans('general.form.select.field', ['field' => trans_choice('general.sizes', 1)])]) !!}
                             </td>
                         </tr>
                         <?php $item_row++; ?>
                         <tr id="addItem">
                             <td class="text-center"><button type="button" onclick="addItem();" data-toggle="tooltip" title="{{ trans('general.add') }}" class="btn btn-xs btn-primary" data-original-title="{{ trans('general.add') }}"><i class="fa fa-plus"></i></button></td>
                             <td class="text-right" colspan="5"></td>
-                        </tr>
-                        <tr>
-                            <td class="text-right" colspan="5"><strong>{{ trans('invoices.sub_total') }}</strong></td>
-                            <td class="text-right"><span id="sub-total">0</span></td>
-                        </tr>
-                        <tr>
-                            <td class="text-right" colspan="5"><strong>{{ trans_choice('general.taxes', 1) }}</strong></td>
-                            <td class="text-right"><span id="tax-total">0</span></td>
-                        </tr>
-                        <tr>
-                            <td class="text-right" colspan="5"><strong>{{ trans('invoices.total') }}</strong></td>
-                            <td class="text-right"><span id="grand-total">0</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -121,28 +115,22 @@
         function addItem() {
             html  = '<tr id="item-row-' + item_row + '">';
             html += '  <td class="text-center" style="vertical-align: middle;">';
-            html += '      <button type="button" onclick="$(this).tooltip(\'destroy\'); $(\'#item-row-' + item_row + '\').remove(); totalItem();" data-toggle="tooltip" title="{{ trans('general.delete') }}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>';
+            html += '      <button type="button" onclick="$(this).tooltip(\'destroy\'); $(\'#item-row-' + item_row + '\').remove();" data-toggle="tooltip" title="{{ trans('general.delete') }}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>';
             html += '  </td>';
             html += '  <td>';
-            html += '      <input class="form-control typeahead" required="required" placeholder="{{ trans('general.form.enter', ['field' => trans_choice('invoices.item_name', 1)]) }}" name="item[' + item_row + '][name]" type="text" id="item-name-' + item_row + '">';
+            html += '      <input class="form-control typeahead" placeholder="{{ trans('general.form.enter', ['field' => trans_choice('invoices.item_name', 1)]) }}" name="item[' + item_row + '][name]" type="text" id="item-name-' + item_row + '">';
             html += '      <input name="item[' + item_row + '][item_id]" type="hidden" id="item-id-' + item_row + '">';
             html += '  </td>';
             html += '  <td>';
-            html += '      <input class="form-control text-center" required="required" name="item[' + item_row + '][quantity]" type="text" id="item-quantity-' + item_row + '">';
+            html += '      <input class="form-control text-right" name="item[' + item_row + '][number_shirt]" type="text" id="item-number-shirt-' + item_row + '">';
             html += '  </td>';
             html += '  <td>';
-            html += '      <input class="form-control text-right" required="required" name="item[' + item_row + '][price]" type="text" id="item-price-' + item_row + '">';
-            html += '  </td>';
-            html += '  <td>';
-            html += '      <select class="form-control select2" name="item[' + item_row + '][tax_id]" id="item-tax-' + item_row + '">';
-            html += '         <option selected="selected" value="">{{ trans('general.form.select.field', ['field' => trans_choice('general.taxes', 1)]) }}</option>';
-            @foreach($taxes as $tax_key => $tax_value)
-            html += '         <option value="{{ $tax_key }}">{{ $tax_value }}</option>';
+            html += '      <select class="form-control select2" name="item[' + item_row + '][size_id]" id="item-size-' + item_row + '">';
+            html += '         <option selected="selected" value="">{{ trans('general.form.select.field', ['field' => trans_choice('general.sizes', 1)]) }}</option>';
+            @foreach($sizes as $size_key => $size_value)
+            html += '         <option value="{{ $size_key }}">{{ $size_value }}</option>';
             @endforeach
             html += '      </select>';
-            html += '  </td>';
-            html += '  <td class="text-right" style="vertical-align: middle;">';
-            html += '      <span id="item-total-' + item_row + '">0</span>';
             html += '  </td>';
 
             $('#items tbody #addItem').before(html);
@@ -151,7 +139,7 @@
             $('[data-toggle="tooltip"]').tooltip('hide');
 
             $('#item-row-' + item_row + ' .select2').select2({
-                placeholder: "{{ trans('general.form.select.field', ['field' => trans_choice('general.taxes', 1)]) }}"
+                placeholder: "{{ trans('general.form.select.field', ['field' => trans_choice('general.sizes', 1)]) }}"
             });
 
             item_row++;
@@ -171,7 +159,7 @@
             });
 
             $(".select2").select2({
-                placeholder: "{{ trans('general.form.select.field', ['field' => trans_choice('general.taxes', 1)]) }}"
+                placeholder: "{{ trans('general.form.select.field', ['field' => trans_choice('general.sizes', 1)]) }}"
             });
 
             $("#customer_id").select2({
@@ -222,17 +210,17 @@
 
                         $('#item-total-' + item_id).html(data.total);
 
-                        totalItem();
+                        //totalItem();
                     }
                 });
             });
 
             $(document).on('change', '#currency_code, #items tbody select', function(){
-                totalItem();
+                //totalItem();
             });
 
             $(document).on('keyup', '#items tbody .form-control', function(){
-                totalItem();
+                //totalItem();
             });
 
             $(document).on('change', '#customer_id', function (e) {
@@ -251,26 +239,26 @@
             });
         });
 
-        function totalItem() {
-            $.ajax({
-                url: '{{ url("items/items/totalItem") }}',
-                type: 'POST',
-                dataType: 'JSON',
-                data: $('#currency_code, #items input[type=\'text\'],#items input[type=\'hidden\'], #items textarea, #items select'),
-                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                success: function(data) {
-                    if (data) {
-                        $.each( data.items, function( key, value ) {
-                            $('#item-total-' + key).html(value);
-                        });
+        {{--function totalItem() {--}}
+            {{--$.ajax({--}}
+                {{--url: '{{ url("items/items/totalItem") }}',--}}
+                {{--type: 'POST',--}}
+                {{--dataType: 'JSON',--}}
+                {{--data: $('#currency_code, #items input[type=\'text\'],#items input[type=\'hidden\'], #items textarea, #items select'),--}}
+                {{--headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },--}}
+                {{--success: function(data) {--}}
+                    {{--if (data) {--}}
+                        {{--$.each( data.items, function( key, value ) {--}}
+                            {{--$('#item-total-' + key).html(value);--}}
+                        {{--});--}}
 
-                        $('#sub-total').html(data.sub_total);
-                        $('#tax-total').html(data.tax_total);
-                        $('#grand-total').html(data.grand_total);
-                    }
-                }
-            });
-        }
+                        {{--$('#sub-total').html(data.sub_total);--}}
+                        {{--$('#tax-total').html(data.tax_total);--}}
+                        {{--$('#grand-total').html(data.grand_total);--}}
+                    {{--}--}}
+                {{--}--}}
+            {{--});--}}
+        {{--}--}}
 
         function createCustomer() {
             $('#modal-create-customer').remove();
@@ -299,10 +287,10 @@
             modal += '                      </div>';
             modal += '                  </div>';
             modal += '                  <div class="form-group col-md-6">';
-            modal += '                      <label for="tax_number" class="control-label">{{ trans('general.tax_number') }}</label>';
+            modal += '                      <label for="tax_number" class="control-label">{{ trans('general.phone') }}</label>';
             modal += '                      <div class="input-group">';
-            modal += '                          <div class="input-group-addon"><i class="fa fa-percent"></i></div>';
-            modal += '                          <input class="form-control" placeholder="{{ trans('general.tax_number') }}" name="tax_number" type="text" id="tax_number">';
+            modal += '                          <div class="input-group-addon"><i class="fa fa-phone"></i></div>';
+            modal += '                          <input class="form-control" placeholder="{{ trans('general.phone') }}" name="phone" type="text" id="phone">';
             modal += '                      </div>';
             modal += '                  </div>';
             modal += '                  <div class="form-group col-md-6 required">';
